@@ -1,3 +1,14 @@
+def list_prime(n):
+    liste = []
+    for i in range(2,n+1) :
+        c = 0
+        for j in range(2,i):
+            if i % j == 0 :
+                break
+            if j == i-1:
+                liste.append(i)
+    return liste
+
 def extended_gcd(a,b):
     """
     Algorithme
@@ -17,3 +28,6 @@ def extended_gcd(a,b):
             v0 = v1
             u1 = u2
             v1 = v2
+
+def key_creation():
+    return
