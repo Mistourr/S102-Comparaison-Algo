@@ -1,3 +1,5 @@
+from random import randint
+
 def list_prime(n):
     liste = []
     for i in range(2,n+1) :
@@ -30,4 +32,19 @@ def extended_gcd(a,b):
             v1 = v2
 
 def key_creation():
-    return
+    primes = list_prime(1000)
+    p = primes.pop(randint(0,len(primes)-1))
+    q = primes.pop(randint(0,len(primes)-1))
+    n = p*q #Module de chiffrage
+    phiN = (p-1)*(q-1) # Indicatrice d'Euler en n
+    e = 2
+    while extended_gcd(phiN,e)[0] != 1 and e<phiN:
+        e += 1
+    if e > phiN:
+        raise RuntimeError("LA SAUCE")
+    pub = (n,e)
+    pgcd,u,v = extended_gcd(e,phiN) # u est la clé privée ?
+    print(p,q,phiN,pub,u)
+    return pub, u
+
+key_creation()
