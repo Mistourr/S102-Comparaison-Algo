@@ -43,8 +43,45 @@ def key_creation():
     if e > phiN:
         raise RuntimeError("LA SAUCE")
     pub = (n,e)
-    pgcd,u,v = extended_gcd(e,phiN) # u est la clé privée ?
-    print(p,q,phiN,pub,u)
-    return pub, u
+    pgcd,u,v = extended_gcd(e,phiN) # u est la cle privee
+    while u <= 0:
+      u+=phiN
+    return pub, (n,u)
 
-key_creation()
+def convert_msg(msg):
+    r = []
+    for i in msg:
+        if ((i >= 'a' and i <= 'z') or i == ' '): #L'enonce demande le chriffrement d'un message sans majuscule, accents ou ponctuation -> pourrait changer
+            r.append(ord(i))
+        else:
+            continue 
+        
+    return r
+
+def encryption(msg,key): ##découper en groupe de 4 chiffres et pas 4 lettres
+    msg_tab = convert_msg(msg)
+    r = []
+    seq = ""
+    for m in msg_tab:
+        seq = seq + str(m)+"0"*(3-len(str(m)))
+    i = 0
+    while i < len(seq):
+        r.append((int(seq[i:i+3])**key[1])%key[0])
+        i += 3
+    #r = (ord(msg[0])**key[1])%key[0]
+    return r
+
+def decryption(msg,key):
+    r = ""
+    for m in msg:
+        m = str((m**key[1])%key[0])
+        if m[-1] == '0' and m[-2]!='0': #On vérifie si le dernier chiffre est 0 (ASCII 2 chiffres)
+            m = m[0:-1]
+        #print(m +" = "+ chr(int(m)))
+        r = r + chr(int(m))
+    return r
+        
+
+pub, priv = key_creation()
+k = encryption("je suis le test",pub)
+print(decryption(k,priv))
