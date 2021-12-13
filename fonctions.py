@@ -1,5 +1,22 @@
 from random import randint
 
+def tests(n):
+    '''
+    Run n encryption/decryption tests
+    '''
+    for n in range(n):
+        string = ""
+        for k in range(randint(1,50)):
+            string = string + chr(randint(97,122)) #randint from 97 to 122 (a-z)
+        pub, priv = key_creation()
+        print(string)
+        k = encryption(string,pub)
+        print(decryption(k,priv))
+        if decryption(k,priv) != string:
+            return False
+    return True
+
+
 def list_prime(n):
     liste = []
     for i in range(2,n+1) :
@@ -32,10 +49,15 @@ def extended_gcd(a,b):
             v1 = v2
 
 def key_creation():
-    primes = list_prime(1000)
-    p = primes.pop(randint(0,len(primes)-1))
-    q = primes.pop(randint(0,len(primes)-1))
-    n = p*q #Module de chiffrage
+    flag = True
+    while flag: ## pour éviter les problèmes de n < m
+        primes = list_prime(1000)
+        p = primes.pop(randint(0,len(primes)-1))
+        q = primes.pop(randint(0,len(primes)-1))
+        n = p*q #Module de chiffrage
+        if n > 990: ## max code ascii
+            flag = False
+    
     phiN = (p-1)*(q-1) # Indicatrice d'Euler en n
     e = 2
     while extended_gcd(phiN,e)[0] != 1 and e<phiN:
@@ -75,13 +97,9 @@ def decryption(msg,key):
     r = ""
     for m in msg:
         m = str((m**key[1])%key[0])
-        if m[-1] == '0' and m[-2]!='0': #On vérifie si le dernier chiffre est 0 (ASCII 2 chiffres)
+        print(m)
+        if (m[2] == '0') and (m[0] == '9'): #On vérifie si le dernier chiffre est 9X0 (ASCII 2 chiffres)
             m = m[0:-1]
         #print(m +" = "+ chr(int(m)))
         r = r + chr(int(m))
     return r
-        
-
-pub, priv = key_creation()
-k = encryption("je suis le test",pub)
-print(decryption(k,priv))
