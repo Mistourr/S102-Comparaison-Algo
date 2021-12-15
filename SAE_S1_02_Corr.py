@@ -50,11 +50,11 @@ def applicationMatrice(vec):
         [0,0,0,1]
         ]
     )
-    return vec*m
+    return m*vec
 
 def poids(vec):
     count = 0
     for i in vec:
-        if i == 1:
+        if i > 0:
             count += 1
     return count
