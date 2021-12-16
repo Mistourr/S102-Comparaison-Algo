@@ -32,12 +32,15 @@ def im(vecs):
     image = []
     for i in vecs:
         image.append(applicationMatrice(i))
+    for k in image: ## Sanitize 1 and 0
+        for v in k:
+            v
     return image
 
 
 def applicationMatrice(vec):
     '''
-    Réplique l'application linéaire pour les vecteurs de 7 bits à l'aide de la matrice de l'application linéai  re.
+    Réplique l'application linéaire pour les vecteurs de 4 bits à l'aide de la matrice de l'application linéai  re.
     '''
     m = np.array(
         [
@@ -50,7 +53,7 @@ def applicationMatrice(vec):
         [0,0,0,1]
         ]
     )
-    return m*vec
+    return np.matmul(m,vec)
 
 def poids(vec):
     count = 0
