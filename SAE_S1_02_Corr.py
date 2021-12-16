@@ -1,6 +1,8 @@
 import numpy as np
 from numpy.core.defchararray import count
 from numpy.lib.function_base import disp
+from numpy.lib.polynomial import polyfit
+from numpy.lib.type_check import imag
 
 def vector_set(display=False): ## Preuve de la Q2.2
     vectors = [
@@ -10,7 +12,7 @@ def vector_set(display=False): ## Preuve de la Q2.2
     np.array([0,0,0,1])
     ]
     result = [] #Ensemble F4²
-    result.append(np.array([0,0,0,0])) ## Vecteur nulle qui appartient forcément à F4²
+    result.append(np.array([0,0,0,0])) ## Vecteur nul qui appartient forcément à F4²
     for i in range(len(vectors)):
         result.append(vectors[i])
         for j in range(i+1,len(vectors)):
@@ -25,18 +27,15 @@ def vector_set(display=False): ## Preuve de la Q2.2
         print("card :",len(result))
     return result
 
-def im(vecs):
+def im(vecs): # Preuve Q2.3
     '''
     retourne l'ensemble des images de applicationMatrice() par vecs -> on donne donc F4² en paramètre
     '''
     image = []
     for i in vecs:
-        image.append(applicationMatrice(i))
-    for k in image: ## Sanitize 1 and 0
-        for v in k:
-            v
+        image.append(applicationMatrice(i)%2)
+    
     return image
-
 
 def applicationMatrice(vec):
     '''
@@ -58,6 +57,32 @@ def applicationMatrice(vec):
 def poids(vec):
     count = 0
     for i in vec:
-        if i > 0:
+        if i == 1:
             count += 1
     return count
+
+def checkQ24(): ## Preuve Q2.4
+    vecset = vector_set()
+    image = im(vecset)
+    for i in image:
+        for j in image:
+            if np.array_equal(i,j):
+                continue
+            if poids((i+j)%2) < 3:
+                print("La distance entre",i,"et",j,"est inférieur à 3")
+                return
+    print("Toute les combinaisons possibles de u et v donnent d(u,v) >= 3")
+    return
+
+def checkQ25():
+    image = im(vector_set())
+    for vecU in image:
+        for bit in range(len(vecU)):
+            vecUdiff = np.copy(vecU)
+            vecUdiff[bit] = (vecUdiff[bit]+1)%2
+            for vecV in image:
+                if np.array_equal(vecV,vecU):
+                    continue
+                if poids((vecU+vecUdiff)%2) > poids((vecU+vecV)%2):
+                    return "La distance entre u et ~u est plus grande qu'entre u et v !"
+    return "La distance entre u et ~u est toujours la plus petite !"
