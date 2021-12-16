@@ -1,5 +1,7 @@
 from random import randint
 
+from numpy.lib.function_base import append
+
 def tests(n):
     '''
     Run n encryption/decryption tests
@@ -73,22 +75,24 @@ def key_creation():
 def convert_msg(msg):
     r = []
     for i in msg:
-        if ((i >= 'a' and i <= 'z') or i == ' '): #L'enonce demande le chriffrement d'un message sans majuscule, accents ou ponctuation -> pourrait changer
+        if ((i >= 'a' and i <= 'z') or i == ' ') or i=='': #L'enonce demande le chriffrement d'un message sans majuscule, accents ou ponctuation -> pourrait changer
             r.append(ord(i))
         else:
-            continue 
-        
+            raise ValueError('On désire seulement chiffrer "une chaîne de caractères ne contenant ni caractère accentué, ni majuscule ni ponctuation"')
     return r
 
 def encryption(msg,key): ##découper en groupe de 4 chiffres et pas 4 lettres
-    msg_tab = convert_msg(msg)
+    if type(msg) == str:
+        msg_tab = convert_msg(msg)
+    else:
+        msg_tab = msg
     r = []
     seq = ""
     for m in msg_tab:
         seq = seq + str(m)+"0"*(3-len(str(m)))
     i = 0
     while i < len(seq):
-        r.append((int(seq[i:i+3])**key[1])%key[0])
+        r.append((int(seq[i:i+3])**key[1])%key[0])        
         i += 3
     #r = (ord(msg[0])**key[1])%key[0]
     return r
@@ -97,7 +101,6 @@ def decryption(msg,key):
     r = ""
     for m in msg:
         m = str((m**key[1])%key[0])
-        print(m)
         if (m[2] == '0') and (m[0] == '9'): #On vérifie si le dernier chiffre est 9X0 (ASCII 2 chiffres)
             m = m[0:-1]
         #print(m +" = "+ chr(int(m)))

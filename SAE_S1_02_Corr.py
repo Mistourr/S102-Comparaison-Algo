@@ -1,8 +1,4 @@
 import numpy as np
-from numpy.core.defchararray import count
-from numpy.lib.function_base import disp
-from numpy.lib.polynomial import polyfit
-from numpy.lib.type_check import imag
 
 def vector_set(display=False): ## Preuve de la Q2.2
     vectors = [
@@ -33,11 +29,10 @@ def im(vecs): # Preuve Q2.3
     '''
     image = []
     for i in vecs:
-        image.append(applicationMatrice(i)%2)
-    
+        image.append(application_matrice(i)%2)
     return image
 
-def applicationMatrice(vec):
+def application_matrice(vec):
     '''
     Réplique l'application linéaire pour les vecteurs de 4 bits à l'aide de la matrice de l'application linéai  re.
     '''
@@ -52,8 +47,17 @@ def applicationMatrice(vec):
         [0,0,0,1]
         ]
     )
-    return np.matmul(m,vec)
+    return np.matmul(m,vec)%2
 
+def antecedent(vec):
+    '''
+    Retrouve l'antécédent d'une image
+    '''
+    vecset = vector_set()
+    for v in vecset:
+        if np.array_equal(application_matrice(v),vec):
+            return v
+    return np.array([0,0,0,0])
 def poids(vec):
     count = 0
     for i in vec:
@@ -86,3 +90,11 @@ def checkQ25():
                 if poids((vecU+vecUdiff)%2) > poids((vecU+vecV)%2):
                     return "La distance entre u et ~u est plus grande qu'entre u et v !"
     return "La distance entre u et ~u est toujours la plus petite !"
+
+def debruiter(vec):
+    image = im(vector_set())
+    r = image[0]
+    for u in image:
+        if poids((vec+u)%2) < poids((vec+r)%2):
+            r = u
+    return r
