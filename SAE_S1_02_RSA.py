@@ -101,7 +101,7 @@ def decryption(msg,key):
     r = ""
     for m in msg:
         m = str((m**key[1])%key[0])
-        if (m[2] == '0') and (m[0] == '9'): #On vérifie si le dernier chiffre est 9X0 (ASCII 2 chiffres)
+        if (m[2] == '0') and (m[0] > '1'): #On vérifie si le nombre est de forme est 9X0 ou 3X0 (ASCII 2 chiffres), la table ascii ne dépasse pas 127 de toute manière
             m = m[0:-1]
         #print(m +" = "+ chr(int(m)))
         r = r + chr(int(m))
