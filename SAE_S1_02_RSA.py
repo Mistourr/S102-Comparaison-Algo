@@ -1,4 +1,5 @@
 from random import randint
+from math import sqrt
 
 from numpy.lib.function_base import append
 
@@ -9,7 +10,7 @@ def tests(n):
     for n in range(n):
         string = ""
         for k in range(randint(1,50)):
-            string = string + chr(randint(97,122)) #randint from 97 to 122 (a-z)
+            string = string + chr(randint(97,122)) #
         pub, priv = key_creation()
         print(string)
         k = encryption(string,pub)
@@ -75,10 +76,14 @@ def key_creation():
 def convert_msg(msg):
     r = []
     for i in msg:
-        if ((i >= 'a' and i <= 'z') or i == ' ') or i=='': #L'enonce demande le chriffrement d'un message sans majuscule, accents ou ponctuation -> pourrait changer
+        r.append(ord(i))
+    '''
+    if ((i >= 'a' and i <= 'z') or i == ' ') or i=='': #L'enonce demande le chriffrement d'un message sans majuscule, accents ou ponctuation -> pourrait changer
             r.append(ord(i))
         else:
             raise ValueError('On désire seulement chiffrer "une chaîne de caractères ne contenant ni caractère accentué, ni majuscule ni ponctuation"')
+    '''
+        
     return r
 
 def encryption(msg,key): ##découper en groupe de 4 chiffres et pas 4 lettres
