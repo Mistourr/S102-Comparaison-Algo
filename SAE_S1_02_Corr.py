@@ -34,7 +34,7 @@ def im(vecs): # Preuve Q2.3
 
 def application_matrice(vec):
     '''
-    Réplique l'application linéaire pour les vecteurs de 4 bits à l'aide de la matrice de l'application linéai  re.
+    Réplique l'application linéaire pour les vecteurs de 4 bits à l'aide de la matrice de l'application linéaire.
     '''
     m = np.array(
         [
