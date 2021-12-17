@@ -9,7 +9,7 @@ def vector_set(display=False): ## Preuve de la Q2.2
     ]
     result = [] #Ensemble F4²
     result.append(np.array([0,0,0,0])) ## Vecteur nul qui appartient forcément à F4²
-    for i in range(len(vectors)):
+    for i in range(len(vectors)): ## On test toute les combinaisons
         result.append(vectors[i])
         for j in range(i+1,len(vectors)):
             result.append(vectors[i]+vectors[j])
@@ -17,7 +17,7 @@ def vector_set(display=False): ## Preuve de la Q2.2
                 result.append(vectors[i]+vectors[j]+vectors[k])
                 for v in range(k+1,len(vectors)):
                     result.append(vectors[i]+vectors[j]+vectors[k]+vectors[v])
-    if display:
+    if display: #du debugging
         for el in result:
             print(el)
         print("card :",len(result))
@@ -53,11 +53,12 @@ def antecedent(vec):
     '''
     Retrouve l'antécédent d'une image
     '''
-    vecset = vector_set()
-    for v in vecset:
+    vecset = vector_set() ## L'ensemble F2^4
+    for v in vecset: ## on cherche le vecteur dans tous les vecteurs de 4 bits tels que l'image de ce vecteur est égale au vecteur vec
         if np.array_equal(application_matrice(v),vec):
             return v
-    return np.array([0,0,0,0])
+    return np.array([0,0,0,0]) ## Si on trouve rien on retourne un vecteur nulle (par défaut)
+
 def poids(vec):
     count = 0
     for i in vec:
@@ -92,9 +93,12 @@ def checkQ25():
     return "La distance entre u et ~u est toujours la plus petite !"
 
 def debruiter(vec):
+    '''
+    Retourne vec débruité
+    '''
     image = im(vector_set())
     r = image[0]
-    for u in image:
+    for u in image: ## On cherche le vecteur le moins distant de vec
         if poids((vec+u)%2) < poids((vec+r)%2):
             r = u
     return r

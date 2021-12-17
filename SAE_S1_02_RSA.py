@@ -1,39 +1,21 @@
 from random import randint
-from math import sqrt
-
-from numpy.lib.function_base import append
-
-def tests(n):
-    '''
-    Run n encryption/decryption tests
-    '''
-    for n in range(n):
-        string = ""
-        for k in range(randint(1,50)):
-            string = string + chr(randint(97,122)) #
-        pub, priv = key_creation()
-        print(string)
-        k = encryption(string,pub)
-        print(decryption(k,priv))
-        if decryption(k,priv) != string:
-            return False
-    return True
-
 
 def list_prime(n):
+    '''
+    Liste tous les nombres premiers de 2 à n
+    '''
     liste = []
-    for i in range(2,n+1) :
-        c = 0
-        for j in range(2,i):
-            if i % j == 0 :
+    for i in range(2,n+1):
+        for j in range(2,i): ## On aurait pu utiliser jusqu'à racine carré de i mais plus le temps de recoder ...
+            if i % j == 0 : ## Si j divise i alors on passe au prochain i car il n'est pas premier
                 break
-            if j == i-1:
+            if j == i-1: ## Si il passe tous les j alors on l'ajoute au résultat
                 liste.append(i)
     return liste
 
 def extended_gcd(a,b):
     """
-    Algorithme
+    Algorithme d'Euclide étendu
     """
     r = 1
     u0,u1,v0,v1 = 1, 0, 0, 1
@@ -63,26 +45,23 @@ def key_creation():
     
     phiN = (p-1)*(q-1) # Indicatrice d'Euler en n
     e = 2
-    while extended_gcd(phiN,e)[0] != 1 and e<phiN:
+    while extended_gcd(phiN,e)[0] != 1 and e<phiN: ## On cherche un e tel que e est premier avec phiN et e est inférieur à phiN
         e += 1
-    if e > phiN:
-        raise RuntimeError("LA SAUCE")
+    if e > phiN: ## Si jamais ça arrive mais normalement non
+        raise RuntimeError("e ne devrait pas être supérieur à phiN")
     pub = (n,e)
     pgcd,u,v = extended_gcd(e,phiN) # u est la cle privee
-    while u <= 0:
+    while u <= 0: ## Si u est négatif on ajoute des phiN car ils sont "annulés" par le modulo
       u+=phiN
     return pub, (n,u)
 
 def convert_msg(msg):
+    '''
+    Convertit un message en liste de codes ASCII
+    '''
     r = []
     for i in msg:
         r.append(ord(i))
-    '''
-    if ((i >= 'a' and i <= 'z') or i == ' ') or i=='': #L'enonce demande le chriffrement d'un message sans majuscule, accents ou ponctuation -> pourrait changer
-            r.append(ord(i))
-        else:
-            raise ValueError('On désire seulement chiffrer "une chaîne de caractères ne contenant ni caractère accentué, ni majuscule ni ponctuation"')
-    '''
         
     return r
 
@@ -99,15 +78,13 @@ def encryption(msg,key): ##découper en groupe de 4 chiffres et pas 4 lettres
     while i < len(seq):
         r.append((int(seq[i:i+3])**key[1])%key[0])        
         i += 3
-    #r = (ord(msg[0])**key[1])%key[0]
     return r
 
 def decryption(msg,key):
     r = ""
     for m in msg:
         m = str((m**key[1])%key[0])
-        if (m[2] == '0') and (m[0] > '1'): #On vérifie si le nombre est de forme est 9X0 ou 3X0 (ASCII 2 chiffres), la table ascii ne dépasse pas 127 de toute manière
+        if (m[2] == '0') and (m[0] > '2'): #On vérifie si le nombre est de forme est 9X0 ou 3X0 (ASCII 2 chiffres), la table ascii ne dépasse pas 127 de toute manière
             m = m[0:-1]
-        #print(m +" = "+ chr(int(m)))
         r = r + chr(int(m))
     return r
